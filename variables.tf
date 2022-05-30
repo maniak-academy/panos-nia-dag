@@ -42,17 +42,17 @@ variable "dag_suffix" {
 
 variable "panos.addres" {
   type        = string
-  default     = ""
+  default     = "192.168.86.68"
 }
 
 
 variable "panos.api_key" {
   type        = string
-  default     = ""
+  default     = "LUFRPT1kdSt6TFY2aG8yRDl2eFhweW1jSG0zVS9IZ1E9cVZrOFVpbDRueTROYkZxSVd3STFtYTNvMkd3VGg0Zi8ybHFVWGlMRG9od1VvamlXU1FwV21RWU03SndvQTQxbw"
 }
 
 
 variable "panos.username" {
   type        = string
-  default     = ""
+  default     = "admin"
 }
