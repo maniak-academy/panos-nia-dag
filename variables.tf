@@ -39,3 +39,20 @@ variable "dag_suffix" {
   description = "(Optional) Suffix added to the dynamic address group created by Consul"
   default     = ""
 }
+
+variable "panos.addres" {
+  type        = string
+  default     = ""
+}
+
+
+variable "panos.api_key" {
+  type        = string
+  default     = ""
+}
+
+
+variable "panos.username" {
+  type        = string
+  default     = ""
+}
