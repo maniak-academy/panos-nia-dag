@@ -1,0 +1,71 @@
+log_level = "DEBUG"
+port = 8558
+syslog {}
+
+buffer_period {
+  enabled = true
+  min     = "5s"
+  max     = "20s"
+}
+
+vault {
+    address = "http://192.168.86.69:8200"
+    token = "hvs.Wj7dddddddUB4x"
+}
+
+id = "cts-01"
+
+
+consul {
+    address = "192.168.86.70:8500"
+    #token = "{{ with secret \"secret/consul\" }}{{ .Data.data.token }}{{ end }}"
+    token = "0d911109-50d8-1abf-dc94-ab3534167f79"
+    #token = ""
+    service_registration {
+      enabled = true
+      service_name = "cts"
+      namespace = "default"
+      default_check {
+        enabled = true
+        address = "http://192.168.86.42:8558"
+      }
+    }
+}
+
+
+driver "terraform-cloud" {
+  hostname = "https://app.terraform.io"
+  organization = "sebbycorp"
+  token        = "{{ with secret \"secret/tfc\" }}{{ .Data.data.token }}{{ end }}"
+      required_providers {
+        panos = {
+           source = "PaloAltoNetworks/panos"
+
+        } 
+    }
+}
+
+terraform_provider "panos" {
+  alias = "panos1" 
+  hostname  = "{{ with secret \"secret/pan\" }}{{ .Data.data.pammgmt }}{{ end }}"
+  username = "{{ with secret \"secret/pan\" }}{{ .Data.data.username }}{{ end }}"
+  password = "{{ with secret \"secret/pan\" }}{{ .Data.data.password }}{{ end }}"
+}
+
+task {
+  name = "pan-dag-webfront"
+  description   = "Dynamic address group based on what is registered in Consul"
+  module = "github.com/maniak-academy/panos-nia-dag"
+  providers = ["panos.panos1"]
+  condition "services" {
+    names = ["prod-webfront"]
+    datacenter = "maniak-academy"
+    namespace  = "default"
+  }
+  terraform_cloud_workspace {
+    execution_mode = "agent"
+    agent_pool_id = "apool-72pQwa4yTmbF13pv"
+    terraform_version = "1.1.5"
+  }
+}
+
